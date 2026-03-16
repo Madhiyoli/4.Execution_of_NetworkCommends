@@ -26,7 +26,67 @@ This commands includes
 • Other IP Commands e.g. show ip route etc.
 <BR>
 
+## PROGRAM 
+
+CLIENT
+```
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 8000))
+
+while True:
+    ip = input("Enter the website you want to ping (or type 'exit' to quit): ")
+    s.send(ip.encode('utf-8'))
+    if ip.lower() == 'exit':
+        break
+    print(s.recv(4096).decode('utf-8'))
+
+s.close()
+```
+
+SERVER
+```
+import socket
+from pythonping import ping
+
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server listening on port 8000...")
+c, addr = s.accept()
+print(f"Connection from {addr}")
+
+while True:
+    try:
+        hostname = c.recv(1024).decode('utf-8')
+        if not hostname or hostname.lower() == 'exit':
+            print("Client disconnected.")
+            break
+        response = ping(hostname, verbose=False, count=4)
+        c.send(str(response).encode('utf-8'))
+    except Exception as e:
+        c.send(f"Ping failed: {e}".encode('utf-8'))
+
+c.close()
+
+```
+
 ## Output
 
+# CLIENT 
+![alt text](<image copy.png>)
+# SEVRVER
+![alt text](image.png)
+# TRACE ROUTE 
+![alt text](<image copy 2.png>)
+# IPCONFIG
+![alt text](<image copy 3.png>)
+# NS LOOK UP 
+![alt text](<image copy 4.png>)
+# NET STAT
+![alt text](<image copy 5.png>)
+# TCPDUMP 
+![alt text](<image copy 6.png>)
 ## Result
 Thus Execution of Network commands Performed 
